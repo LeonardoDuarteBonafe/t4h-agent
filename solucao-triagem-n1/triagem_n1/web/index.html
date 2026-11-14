@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142d39">
+  <title>Triagem N1 · Central de atendimento</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar" aria-label="Navegação da aplicação">
+    <a class="brand" href="/" aria-label="Triagem N1, início"><span class="brand-mark">N1<span></span></span><span>Triagem N1<small>COLABORADORES DIGITAIS</small></span></a>
+    <p class="sidebar-label">ÁREA DE TRABALHO</p>
+    <nav class="navigation">
+      <button class="nav-item active" type="button" id="nav-all"><span class="nav-icon">▤</span>Central de atendimento<span class="nav-count" id="nav-case-count">0</span></button>
+      <button class="nav-item" type="button" id="nav-human"><span class="nav-icon">◇</span>Pendências humanas<span class="nav-count" id="nav-human-count">0</span></button>
+      <a class="nav-item" href="http://localhost:8765" target="_blank" rel="noopener noreferrer"><span class="nav-icon">↗</span>Painel do mundo</a>
+    </nav>
+    <div class="team-section">
+      <p class="sidebar-label">SEU TIME DE AGENTES</p>
+      <div class="team-member"><span class="avatar triage">T</span><span>Triagista<small>Entende, encaminha e revisa</small></span></div>
+      <div class="team-member"><span class="avatar technical">TI</span><span>Especialista técnico<small>Infraestrutura e produto</small></span></div>
+      <div class="team-member"><span class="avatar admin">AD</span><span>Especialista administrativo<small>Pessoas e demais áreas</small></span></div>
+    </div>
+    <div class="sidebar-bottom"><span class="live-dot" id="sidebar-dot"></span><div id="sidebar-runtime">Atendimento pausado<small>Os registros continuam disponíveis</small></div></div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar"><span class="breadcrumb">Espaço de trabalho <span>/</span> <strong>Central de atendimento</strong></span><span class="environment"><span></span>Ambiente local</span></header>
+    <div class="main-content">
+      <section class="page-heading">
+        <div><p class="eyebrow">SEU TIME, EM AÇÃO</p><h1>Central de atendimento</h1><p class="intro">Pedidos organizados. Decisões acompanhadas. Pessoas no controle.</p></div>
+        <div class="heading-actions"><button class="button button-secondary" id="runtime-toggle" type="button">Iniciar atendimento</button><button class="button button-primary" id="open-intake" type="button"><span aria-hidden="true">＋</span>Novo pedido</button></div>
+      </section>
+
+      <section class="connection-strip" aria-label="Estado dos serviços">
+        <span class="connection-status" id="world-status"><span class="status-dot"></span>Conferindo conexão com o mundo</span>
+        <span class="strip-divider"></span><span>Rodada <strong id="run-id">—</strong></span>
+        <span class="strip-divider"></span><span>Modelo <strong id="model-name">—</strong></span>
+        <span class="last-sync" id="last-sync">Aguardando atualização</span>
+      </section>
+
+      <div class="notice error-notice" id="connection-error" role="status" hidden></div>
+
+      <section class="metrics" aria-label="Indicadores da aplicação">
+        <article class="metric-card"><span>Casos recebidos</span><div><strong id="metric-total">0</strong><span class="metric-symbol">▤</span></div><small>Histórico desta rodada</small></article>
+        <article class="metric-card human"><span>Aguardando pessoa</span><div><strong id="metric-human">0</strong><span class="metric-symbol">◇</span></div><small>Aprovações e escalações</small></article>
+        <article class="metric-card"><span>Respondidos ou encaminhados</span><div><strong id="metric-treated">0</strong><span class="metric-symbol">✓</span></div><small>Acompanhe os detalhes de cada caso</small></article>
+        <article class="metric-card"><span>Precisam de informação</span><div><strong id="metric-data">0</strong><span class="metric-symbol">···</span></div><small>Esperando complemento do pedido</small></article>
+      </section>
+
+      <section class="case-workspace" aria-label="Acompanhamento dos casos">
+        <div class="case-list-panel">
+          <div class="panel-heading"><div><h2>Caixa de atendimento</h2><p>Selecione um caso para acompanhar as decisões.</p></div><span class="small-live"><span class="live-dot"></span>Ao vivo</span></div>
+          <div class="list-toolbar"><div class="filter-tabs" role="group" aria-label="Filtrar casos"><button type="button" class="filter active" data-filter="all">Todos</button><button type="button" class="filter" data-filter="human">Pessoa <span id="filter-human-count">0</span></button><button type="button" class="filter" data-filter="active">Em andamento</button><button type="button" class="filter" data-filter="treated">Tratados</button></div><label class="search-field"><span aria-hidden="true">⌕</span><input id="case-search" type="search" placeholder="Buscar pedido, pessoa ou setor" aria-label="Buscar casos"></label></div>
+          <div class="case-list" id="case-list" aria-live="polite"></div>
+          <div class="empty-state" id="empty-cases"><div class="empty-icon">▤</div><h3>Sua caixa está pronta</h3><p>Inicie o atendimento e crie um pedido para acompanhar os agentes trabalhando juntos.</p><button type="button" class="text-button" id="empty-intake">Criar primeiro pedido <span aria-hidden="true">→</span></button></div>
+          <div class="list-footer"><span id="list-count">Nenhum caso nesta visão</span><span>Atualiza automaticamente</span></div>
+        </div>
+
+        <aside class="inspector" id="inspector" aria-label="Detalhes do caso">
+          <div class="inspector-placeholder" id="inspector-placeholder"><div class="detail-placeholder-icon">↗</div><h3>O caminho de cada pedido</h3><p>Aqui você acompanha a classificação, a proposta do especialista, a revisão e o resultado confirmado.</p><div class="flow-preview"><span>T</span><i></i><span>TI / AD</span><i></i><span>✓</span></div></div>
+          <div id="case-detail" hidden>
+            <header class="detail-heading"><div class="detail-heading-top"><span class="case-reference" id="detail-id"></span><span id="detail-status"></span></div><h2 id="detail-subject"></h2><p id="detail-sender"></p><div class="detail-labels" id="detail-labels"></div></header>
+            <div class="detail-tabs" role="tablist" aria-label="Visões do caso"><button type="button" role="tab" aria-selected="true" data-view="overview" class="detail-tab active">Atendimento</button><button type="button" role="tab" aria-selected="false" data-view="agents" class="detail-tab">Agentes <span id="trace-count">0</span></button><button type="button" role="tab" aria-selected="false" data-view="operations" class="detail-tab">Operações</button></div>
+            <div class="detail-body">
+              <section id="view-overview" class="detail-view"><div id="overview-content"></div><form id="decision-form" class="human-decision" hidden><p class="section-kicker" id="decision-kicker">DECISÃO HUMANA</p><h3 id="decision-title">Esta proposta precisa de você</h3><p class="decision-description" id="decision-description"></p><label>Seu nome e papel<input name="actor" id="decision-actor" autocomplete="name" required maxlength="100" placeholder="Ex.: Ana · pessoa responsável"></label><label>Justificativa ou encaminhamento<textarea name="note" id="decision-note" required rows="3" maxlength="1500" placeholder="Registre o motivo da decisão e o próximo passo."></textarea></label><p class="form-helper">A decisão será registrada para a versão <strong id="decision-version"></strong> desta proposta.</p><div class="decision-actions" id="decision-actions"></div><p class="form-error" id="decision-error" role="alert" hidden></p></form><div id="decision-history"></div></section>
+              <section id="view-agents" class="detail-view" hidden><p class="view-description">Entradas e resultados registrados nas invocações dos agentes.</p><div class="timeline" id="trace-list"></div></section>
+              <section id="view-operations" class="detail-view" hidden><p class="view-description">Confira o retorno das ferramentas. Encaminhar um pedido não significa que ele foi resolvido.</p><div id="operation-list"></div></section>
+            </div>
+          </div>
+        </aside>
+      </section>
+      <p class="metrics-note">Os números acima acompanham esta aplicação. Consulte os indicadores oficiais no <a href="http://localhost:8765" target="_blank" rel="noopener noreferrer">painel do mundo</a>.</p>
+    </div>
+  </main>
+
+  <dialog id="intake-dialog" class="intake-dialog">
+    <form id="intake-form">
+      <div class="dialog-heading"><div><p class="eyebrow">CAIXA DE ENTRADA</p><h2>Novo pedido</h2></div><button type="button" class="icon-button" id="close-intake" aria-label="Fechar novo pedido">×</button></div>
+      <p class="dialog-intro">Crie um evento no mundo simulado e acompanhe seu atendimento. Use apenas dados fictícios.</p>
+      <div class="examples"><span>Experimente</span><button type="button" data-example="vpn">VPN</button><button type="button" data-example="notebook">Notebook</button><button type="button" data-example="reembolso">Reembolso</button><button type="button" data-example="acesso">Acesso</button><button type="button" data-example="suspeita">Suspeita</button></div>
+      <div class="form-row"><label>Nome da pessoa<input name="nome" id="intake-name" required maxlength="160" placeholder="Colaborador Teste" value="Colaborador Teste"></label><label>E-mail do remetente<input name="de" id="intake-sender" type="email" required maxlength="200" value="colaborador.teste@t4h.exemplo"></label></div>
+      <label>Assunto<input name="assunto" id="intake-subject" required maxlength="300" placeholder="O que você precisa resolver?"></label>
+      <label>Descrição<textarea name="corpo" id="intake-body" required rows="5" maxlength="5000" placeholder="Conte o que aconteceu, o impacto e as informações disponíveis."></textarea></label>
+      <p class="form-error" id="intake-error" role="alert" hidden></p>
+      <div class="dialog-footer"><button type="button" class="button button-secondary" id="cancel-intake">Cancelar</button><button type="submit" class="button button-primary" id="submit-intake">Enviar pedido <span aria-hidden="true">→</span></button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>

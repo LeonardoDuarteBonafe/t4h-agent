@@ -1,0 +1,19 @@
+# Configuração privada e estado local
+.env
+.env.*
+!.env.example
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/logs/
+solucao-triagem-n1/data/
+**/*.sqlite
+**/*.sqlite3
+**/*.sqlite3-wal
+**/*.sqlite3-shm
+**/playwright-report/
+**/test-results/
+.DS_Store
+Thumbs.db
